@@ -3,40 +3,45 @@ package implement;
 import api.ITaTeTiTDA;
 
 import java.util.Arrays;
+import java.util.Random;
 
 public class TaTeTi implements ITaTeTiTDA {
-    private static final int boardSize = 9;
     private static final int pc = 1;
     private static final int player = -1;
     private static final int empty = 0;
 
-    private final int[] board = new int[boardSize];
+    private final int[] board = new int[9];
 
-    public boolean boardCompleted(int[] board) {
+    public boolean boardCompleted() {
         int i = 0;
-        boolean found = false;
-        while (i < boardSize && !found) {
+        boolean completed = true;
+        while (i < board.length && completed) {
             if(board[i] == empty) {
-                found = true;
+                completed = false;
             }
             i++;
         }
-        return found;
+        return completed;
     }
 
     @Override
     public void Inicializar() {
-        for (int i = 0; i < boardSize; i++) {
-            board[i] = empty;
-        }
+        Arrays.fill(board, empty);
     }
 
     @Override
-    public void Turno(boolean juegaMaquinaPrimero, int selectedPosition) throws Exception {
-        int pos = selectedPosition - 1;
-        if(juegaMaquinaPrimero && (pos < 0 || pos > 8 || board[pos] != empty)) {
-            board[pos] = pc;
+    public void Turno(boolean juegaMaquinaPrimero) {
+        if(juegaMaquinaPrimero) {
+            board[GetRandomPosition()] = pc;
         };
+    }
+
+    private int GetRandomPosition() {
+        Random random = new Random();
+        return random.ints(0, 8)
+                .findFirst()
+                .getAsInt();
+
     }
 
     @Override
@@ -46,10 +51,10 @@ public class TaTeTi implements ITaTeTiTDA {
             throw new Exception("Posicion erronea");
         }
         board[pos] = player;
-        JugarPc();
+        this.mostrarTablero();
     }
 
-    public int result(int[] board) {
+    public int getResult() {
         if(board[0] == board[2] && board[1] == board[2]) {
             return board[0];
         } else if (board[3] == board[4] && board[4] == board[5]) {
@@ -71,34 +76,70 @@ public class TaTeTi implements ITaTeTiTDA {
         }
     }
 
-    public  int JugarPc() {
-        return JugarPc(board, pc);
+    public void JugarPc() {
+        if(!boardCompleted()) {
+            int value = Integer.MIN_VALUE, aux, pos = 0;
+            for (int i = 0; i < board.length; i++) {
+                if(board[i] == empty) {
+                    board[i] = pc;
+                    aux = minmax(player);
+                    if(aux > value) {
+                        value = aux;
+                        pos = i;
+                    }
+                    board[i] = empty;
+                }
+            }
+            board[pos] = pc;
+        }
+        this.mostrarTablero();
     }
 
-    public int JugarPc(int[] board, int turno) {
-        if(boardCompleted(board)) {
-            return result(board);
+    public int minmax(int turn) {
+        if(boardCompleted() || getResult() != 0) {
+            if(getResult() != 0) {
+                return turn == pc ? player : pc;
+            } else {
+                return 0;
+            }
         }
-        int[] copiedBoard = Arrays.copyOf(board, boardSize);
-        int value;
 
-        if(turno == pc) {
+        int value, aux, nextTurn;
+        if(turn == pc) {
+            nextTurn = player;
             value = Integer.MIN_VALUE;
         } else {
+            nextTurn = pc;
             value = Integer.MAX_VALUE;
         }
 
-        for (int i = 0; i < boardSize; i++) {
-            if(copiedBoard[i] == empty) {
-                copiedBoard[i] = turno;
-                if(turno == pc) {
-                    value = Math.max(value, JugarPc(copiedBoard, player));
-                } else {
-                    value = Math.min(value, JugarPc(copiedBoard, pc));
-                }
+        for (int i = 0; i < board.length; i++) {
+            if(board[i] == empty) {
+                board[i] = turn;
+                aux = minmax(nextTurn);
+                if((turn == pc && aux > value) || (turn == player && aux < value))
+                    value = aux;
+                board[i] = empty;
             }
         }
 
         return value;
+    }
+
+    public void mostrarTablero() {
+        System.out.println();
+        for (int i = 0; i < 3; i++) {
+            for (int j = 0; j < 3; j++) {
+                String l;
+                if (board[j + (i * 3)] == 1)
+                    l = "X";
+                else if (board[j + (i * 3)] == -1)
+                    l = "O";
+                else
+                    l = "-";
+                System.out.print(l);
+            }
+            System.out.println();
+        }
     }
 }
