@@ -30,12 +30,19 @@ public class TaTeTi implements ITaTeTiTDA {
     }
 
     @Override
-    public void Turno(boolean juegaMaquinaPrimero) {
-        if(juegaMaquinaPrimero) {
-            board[GetRandomPosition()] = pc;
-        };
+    public void Turno() throws Exception {
+        this.Turno(GetRandomPosition());
     }
-
+    
+    public void Turno(int selectedPosition) throws Exception {
+	        int pos = selectedPosition - 1;
+	        if(board[pos] != empty) {
+	            throw new Exception("Posicion erronea");
+	        }
+           board[pos] = pc;
+           this.mostrarTablero();
+    }
+    
     private int GetRandomPosition() {
         Random random = new Random();
         return random.ints(0, 8)
@@ -47,7 +54,7 @@ public class TaTeTi implements ITaTeTiTDA {
     @Override
     public void Jugar(int selectedPosition) throws Exception {
         int pos = selectedPosition - 1;
-        if(pos < 0 || pos > 8 || board[pos] != empty) {
+        if(board[pos] != empty) {
             throw new Exception("Posicion erronea");
         }
         board[pos] = player;
@@ -55,6 +62,7 @@ public class TaTeTi implements ITaTeTiTDA {
     }
 
     public int getResult() {
+    	//return 1 || -1  (si hay ganador) || 0 (empate)
         if(board[0] == board[2] && board[1] == board[2]) {
             return board[0];
         } else if (board[3] == board[4] && board[4] == board[5]) {
