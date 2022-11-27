@@ -44,12 +44,9 @@ public class Main {
         TaTeTi game = new TaTeTi();
         game.Inicializar();
 		if(!GetSimpleResponse("Deseas jugar con poda?")) {
-			System.out.println("Entro!");
 			game.prune = false;
 		}
-
         if(GetSimpleResponse("Deseas jugar primero?")) {
-			System.out.println("Entrov1");
 			int position = GetPosition();
 			game.Jugar(position);
 			game.JugarPc();
@@ -68,7 +65,7 @@ public class Main {
             game.JugarPc();
         }
 
-//		System.out.println("El ganador es: %s", game.GetWinner());
-		System.out.println(game.count);
+		System.out.println(String.format("El ganador es: %s", game.GetWinner()));
+		System.out.println(String.format("Cantidad de jugadas evaluadas: %s", Integer.toString(game.count)));
     }
 }

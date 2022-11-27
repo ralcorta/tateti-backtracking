@@ -1,6 +1,7 @@
 package implement;
 
 import api.ITaTeTiTDA;
+import sun.management.counter.perf.PerfLongArrayCounter;
 
 import java.util.Arrays;
 import java.util.Random;
@@ -66,31 +67,22 @@ public class TaTeTi implements ITaTeTiTDA {
 
     public int getResult() {
         if(board[0] != 0 && board[0] == board[2] && board[1] == board[2]) {
-//            System.out.println(1);
             return board[0];
         } else if (board[3] != 0 && board[3] == board[4] && board[4] == board[5]) {
-//            System.out.println(2);
             return board[3];
         } else if (board[6] != 0 && board[6] == board[7] && board[6] == board[8]) {
-//            System.out.println(3);
             return board[6];
         } else if(board[0] != 0 && board[0] == board[3] && board[0] == board[6]) {
-//            System.out.println(4);
             return board[0];
         } else if (board[1] != 0 && board[1] == board[4] && board[1] == board[7]) {
-//            System.out.println(5);
             return board[1];
         } else if (board[2] != 0 && board[2] == board[5] && board[2] == board[8]) {
-//            System.out.println(6);
             return board[2];
         } else if (board[0] != 0 && board[0] == board[4] && board[0] == board[8]) {
-//            System.out.println(7);
             return board[0];
         } else if (board[2] != 0 && board[2] == board[4] && board[2] == board[6]) {
-//            System.out.println(8);
             return board[2];
         } else {
-//            System.out.println(0);
             return 0;
         }
     }
@@ -119,7 +111,11 @@ public class TaTeTi implements ITaTeTiTDA {
     private int minmax(int turn, int alfa, int beta) {
         count++;
         if(boardCompleted() || getResult() != 0) {
-            return getResult();
+            if(getResult() != 0) {
+                return turn == pc ? player : pc;
+            } else {
+                return 0;
+            }
         }
 
         int value, aux, nextTurn;
@@ -135,6 +131,9 @@ public class TaTeTi implements ITaTeTiTDA {
             if(board[i] == empty) {
                 board[i] = turn;
                 aux = minmax(nextTurn, alfa, beta);
+//                if((turn == pc && aux > value) || (turn == player && aux < value))
+//                    value = aux;
+
                 if (turn == pc && aux > value) {
                     value = aux;
                     alfa = Math.max(value, alfa);
@@ -150,6 +149,17 @@ public class TaTeTi implements ITaTeTiTDA {
         }
 
         return value;
+    }
+
+    public String GetWinner() {
+        int res = getResult();
+        if(res == pc) {
+            return "PC";
+        } else if (res == player) {
+            return "Jugador";
+        } else {
+            return "Ninguno";
+        }
     }
 
     public void mostrarTablero() {
