@@ -8,15 +8,6 @@ import java.io.InputStreamReader;
 
 public class Main {
 
-	public static boolean validPosition(int pos) {
-		int position = pos - 1;
-		boolean valid = true;
-		if (position < 0 || position > 8) {
-			valid = false;
-		}
-		return valid;
-	}
-
 	public static String GetMessageResponse(String message) throws IOException {
 		BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
 		System.out.print("\n");
@@ -24,12 +15,12 @@ public class Main {
 		return reader.readLine();
 	}
 
-	public static int GetPosition() throws IOException {
+	public static int GetPosition(TaTeTi game) throws IOException {
 		int pos;
 		do {
 			String m = GetMessageResponse("Elige una posicion disponible entre el 1 y el 9: ");
 			pos = Integer.parseInt(m);
-		} while (!validPosition(pos));
+		} while (!game.validatePosition(pos));
 		return pos;
 	}
 
@@ -47,19 +38,19 @@ public class Main {
 			game.prune = false;
 		}
         if(GetSimpleResponse("Deseas jugar primero?")) {
-			int position = GetPosition();
+			int position = GetPosition(game);
 			game.Jugar(position);
 			game.JugarPc();
         } else {
             if(GetSimpleResponse("Deseas elegir donde comienza la PC?")) {
-                game.Turno(GetPosition());
+                game.Turno(GetPosition(game));
             } else {
                 System.out.println("Juega la PC.");
                 game.Turno();
             }
         }
         while(game.getResult() == 0 && !game.boardCompleted()) {
-    		game.Jugar(GetPosition());
+    		game.Jugar(GetPosition(game));
 			if(game.boardCompleted() || game.getResult() != 0)
 				break;
             game.JugarPc();

@@ -16,6 +16,15 @@ public class TaTeTi implements ITaTeTiTDA {
 
     public boolean prune = true;
 
+    public boolean validatePosition(int pos) {
+        int position = pos - 1;
+        boolean valid = true;
+        if ((position < 0 || position > 8) || board[position] != empty) {
+            valid = false;
+        }
+        return valid;
+    }
+
     public boolean boardCompleted() {
         int i = 0;
         boolean completed = true;
@@ -44,7 +53,7 @@ public class TaTeTi implements ITaTeTiTDA {
 	            throw new Exception("Posicion erronea");
 	        }
            board[pos] = pc;
-           this.mostrarTablero();
+           this.mostrarTablero(pc);
     }
     
     private int GetRandomPosition() {
@@ -62,7 +71,7 @@ public class TaTeTi implements ITaTeTiTDA {
             throw new Exception("Posicion erronea");
         }
         board[pos] = player;
-        this.mostrarTablero();
+        this.mostrarTablero(player);
     }
 
     public int getResult() {
@@ -105,7 +114,7 @@ public class TaTeTi implements ITaTeTiTDA {
             }
             board[pos] = pc;
         }
-        this.mostrarTablero();
+        this.mostrarTablero(pc);
     }
 
     private int minmax(int turn, int alfa, int beta) {
@@ -131,9 +140,6 @@ public class TaTeTi implements ITaTeTiTDA {
             if(board[i] == empty) {
                 board[i] = turn;
                 aux = minmax(nextTurn, alfa, beta);
-//                if((turn == pc && aux > value) || (turn == player && aux < value))
-//                    value = aux;
-
                 if (turn == pc && aux > value) {
                     value = aux;
                     alfa = Math.max(value, alfa);
@@ -152,30 +158,35 @@ public class TaTeTi implements ITaTeTiTDA {
     }
 
     public String GetWinner() {
-        int res = getResult();
-        if(res == pc) {
+        int p = getResult();
+        return ParsePlayerName(p);
+    }
+
+    public String ParsePlayerName(int p) {
+        if(p == pc) {
             return "PC";
-        } else if (res == player) {
+        } else if (p == player) {
             return "Jugador";
         } else {
             return "Ninguno";
         }
     }
 
-    public void mostrarTablero() {
-        System.out.println();
+    public void mostrarTablero(int p) {
+        System.out.println(String.format("Jugada de %s", ParsePlayerName(p)));
         for (int i = 0; i < 3; i++) {
             for (int j = 0; j < 3; j++) {
                 String l;
                 if (board[j + (i * 3)] == 1)
-                    l = "X";
+                    l = "X | ";
                 else if (board[j + (i * 3)] == -1)
-                    l = "O";
+                    l = "O | ";
                 else
-                    l = "-";
+                    l = "- | ";
                 System.out.print(l);
             }
             System.out.println();
         }
+        System.out.println();
     }
 }
