@@ -61,15 +61,13 @@ public class TaTeTi implements ITaTeTiTDA {
         return random.ints(0, 8)
                 .findFirst()
                 .getAsInt();
-
     }
 
     @Override
     public void Jugar(int selectedPosition) throws Exception {
         int pos = selectedPosition - 1;
-        if(board[pos] != empty) {
+        if(board[pos] != empty)
             throw new Exception("Posicion erronea");
-        }
         board[pos] = player;
         this.mostrarTablero(player);
     }
@@ -126,7 +124,6 @@ public class TaTeTi implements ITaTeTiTDA {
                 return 0;
             }
         }
-
         int value, aux, nextTurn;
         if(turn == pc) {
             nextTurn = player;
@@ -135,7 +132,6 @@ public class TaTeTi implements ITaTeTiTDA {
             nextTurn = pc;
             value = Integer.MAX_VALUE;
         }
-
         for (int i = 0; i < board.length; i++) {
             if(board[i] == empty) {
                 board[i] = turn;
@@ -153,7 +149,6 @@ public class TaTeTi implements ITaTeTiTDA {
                     break;
             }
         }
-
         return value;
     }
 
@@ -163,13 +158,12 @@ public class TaTeTi implements ITaTeTiTDA {
     }
 
     public String ParsePlayerName(int p) {
-        if(p == pc) {
+        if(p == pc)
             return "PC";
-        } else if (p == player) {
+        else if (p == player)
             return "Jugador";
-        } else {
+        else
             return "Ninguno";
-        }
     }
 
     public void mostrarTablero(int p) {
