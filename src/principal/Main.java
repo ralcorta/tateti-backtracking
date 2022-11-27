@@ -3,64 +3,72 @@ package principal;
 import implement.TaTeTi;
 
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStreamReader;
 
 public class Main {
-	
+
 	public static boolean validPosition(int pos) {
 		int position = pos - 1;
 		boolean valid = true;
 		if (position < 0 || position > 8) {
 			valid = false;
 		}
-		
 		return valid;
+	}
+
+	public static String GetMessageResponse(String message) throws IOException {
+		BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
+		System.out.print("\n");
+		System.out.print(message);
+		return reader.readLine();
+	}
+
+	public static int GetPosition() throws IOException {
+		int pos;
+		do {
+			String m = GetMessageResponse("Elige una posicion disponible entre el 1 y el 9: ");
+			pos = Integer.parseInt(m);
+		} while (!validPosition(pos));
+		return pos;
+	}
+
+	public static boolean GetSimpleResponse(String message) throws IOException {
+		String baseMessage = String.format("%s (Y/n) ", message);
+		String m = GetMessageResponse(baseMessage);
+		return !m.equals("n");
 	}
 	
     public static void main(String[] args) throws Exception {
         System.out.println("Inicializando juego...");
-        BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
         TaTeTi game = new TaTeTi();
         game.Inicializar();
-        System.out.print("Deseas jugar primero? (Y/n)");
-        String firstMove = reader.readLine();
-        if(!firstMove.equals("n")) {
-        	int position;
-        	do {
-        		System.out.print("\nElige una posicion disponible entre el 1 y el 9: ");
-        		String pos = reader.readLine();
-        		position = Integer.parseInt(pos);
-        	} while (!validPosition(position));
-        	
-            game.Jugar(position);
-        } else {
-            System.out.print("Deseas elegir donde comienza la PC? (Y/n)");
-            String selectPos = reader.readLine();
-            if(!selectPos.equals("n")) {
-            	int position;
-            	do {
-            		System.out.print("\nElige una posicion disponible entre el 1 y el 9: ");
-            		String pos = reader.readLine();
-            		position = Integer.parseInt(pos);
-            	} while (!validPosition(position));
+		if(!GetSimpleResponse("Deseas jugar con poda?")) {
+			System.out.println("Entro!");
+			game.prune = false;
+		}
 
-                game.Turno((position));
+        if(GetSimpleResponse("Deseas jugar primero?")) {
+			System.out.println("Entrov1");
+			int position = GetPosition();
+			game.Jugar(position);
+			game.JugarPc();
+        } else {
+            if(GetSimpleResponse("Deseas elegir donde comienza la PC?")) {
+                game.Turno(GetPosition());
             } else {
                 System.out.println("Juega la PC.");
                 game.Turno();
             }
         }
         while(game.getResult() == 0 && !game.boardCompleted()) {
-        	int position;
-        	do {
-        		System.out.print("Elige una posicion disponible entre el 1 y el 9: ");
-        		String pos = reader.readLine();
-        		position = Integer.parseInt(pos);
-        	} while (!validPosition(position));
-        	
-    		game.Jugar(position);        
+    		game.Jugar(GetPosition());
+			if(game.boardCompleted() || game.getResult() != 0)
+				break;
             game.JugarPc();
         }
 
+//		System.out.println("El ganador es: %s", game.GetWinner());
+		System.out.println(game.count);
     }
 }

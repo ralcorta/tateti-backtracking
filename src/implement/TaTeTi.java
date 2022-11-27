@@ -9,8 +9,11 @@ public class TaTeTi implements ITaTeTiTDA {
     private static final int pc = 1;
     private static final int player = -1;
     private static final int empty = 0;
-
     private final int[] board = new int[9];
+
+    public int count = 0;
+
+    public boolean prune = true;
 
     public boolean boardCompleted() {
         int i = 0;
@@ -62,24 +65,32 @@ public class TaTeTi implements ITaTeTiTDA {
     }
 
     public int getResult() {
-    	//return 1 || -1  (si hay ganador) || 0 (empate)
-        if(board[0] == board[2] && board[1] == board[2]) {
+        if(board[0] != 0 && board[0] == board[2] && board[1] == board[2]) {
+//            System.out.println(1);
             return board[0];
-        } else if (board[3] == board[4] && board[4] == board[5]) {
+        } else if (board[3] != 0 && board[3] == board[4] && board[4] == board[5]) {
+//            System.out.println(2);
             return board[3];
-        } else if (board[6] == board[7] && board[6] == board[8]) {
+        } else if (board[6] != 0 && board[6] == board[7] && board[6] == board[8]) {
+//            System.out.println(3);
             return board[6];
-        } else if(board[0] == board[3] && board[0] == board[6]) {
+        } else if(board[0] != 0 && board[0] == board[3] && board[0] == board[6]) {
+//            System.out.println(4);
             return board[0];
-        } else if (board[1] == board[4] && board[1] == board[7]) {
+        } else if (board[1] != 0 && board[1] == board[4] && board[1] == board[7]) {
+//            System.out.println(5);
             return board[1];
-        } else if (board[2] == board[5] && board[2] == board[8]) {
+        } else if (board[2] != 0 && board[2] == board[5] && board[2] == board[8]) {
+//            System.out.println(6);
             return board[2];
-        } else if (board[0] == board[4] && board[0] == board[8]) {
+        } else if (board[0] != 0 && board[0] == board[4] && board[0] == board[8]) {
+//            System.out.println(7);
             return board[0];
-        } else if (board[2] == board[4] && board[2] == board[6]) {
+        } else if (board[2] != 0 && board[2] == board[4] && board[2] == board[6]) {
+//            System.out.println(8);
             return board[2];
         } else {
+//            System.out.println(0);
             return 0;
         }
     }
@@ -87,10 +98,12 @@ public class TaTeTi implements ITaTeTiTDA {
     public void JugarPc() {
         if(!boardCompleted()) {
             int value = Integer.MIN_VALUE, aux, pos = 0;
+            int alfa = Integer.MIN_VALUE;
+            int beta = Integer.MAX_VALUE;
             for (int i = 0; i < board.length; i++) {
                 if(board[i] == empty) {
                     board[i] = pc;
-                    aux = minmax(player);
+                    aux = minmax(player, alfa, beta);
                     if(aux > value) {
                         value = aux;
                         pos = i;
@@ -103,13 +116,10 @@ public class TaTeTi implements ITaTeTiTDA {
         this.mostrarTablero();
     }
 
-    public int minmax(int turn) {
+    private int minmax(int turn, int alfa, int beta) {
+        count++;
         if(boardCompleted() || getResult() != 0) {
-            if(getResult() != 0) {
-                return turn == pc ? player : pc;
-            } else {
-                return 0;
-            }
+            return getResult();
         }
 
         int value, aux, nextTurn;
@@ -124,10 +134,18 @@ public class TaTeTi implements ITaTeTiTDA {
         for (int i = 0; i < board.length; i++) {
             if(board[i] == empty) {
                 board[i] = turn;
-                aux = minmax(nextTurn);
-                if((turn == pc && aux > value) || (turn == player && aux < value))
+                aux = minmax(nextTurn, alfa, beta);
+                if (turn == pc && aux > value) {
                     value = aux;
+                    alfa = Math.max(value, alfa);
+                }
+                else if (turn == player && aux < value) {
+                    value = aux;
+                    beta = Math.min(value, beta);
+                }
                 board[i] = empty;
+                if (prune && alfa > beta)
+                    break;
             }
         }
 
