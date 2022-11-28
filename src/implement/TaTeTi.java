@@ -102,7 +102,7 @@ public class TaTeTi implements ITaTeTiTDA {
     }
 
 
-    //O(n^3)
+    //O(9^(n+1))
     public void JugarPc() {
         if(!boardCompleted()) {
             int value = Integer.MIN_VALUE, aux, pos = 0;
@@ -125,12 +125,13 @@ public class TaTeTi implements ITaTeTiTDA {
     }
 
     /*
-        Θ(n^(k+1)) si a = 1
-        a = 1
+        O(n^k . a^(n/b))
+        k = 0
         b = 1
-        k = 1
+        a = 9
 
-        O(n^2)
+        O(1 . 9 ^ (n / 1))
+        O(9^n)
      */
     private int minmax(int turn, int alfa, int beta) {
         count++;
