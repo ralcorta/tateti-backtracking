@@ -16,6 +16,7 @@ public class TaTeTi implements ITaTeTiTDA {
 
     public boolean prune = true;
 
+    //o(1)
     public boolean validatePosition(int pos) {
         int position = pos - 1;
         boolean valid = true;
@@ -25,6 +26,7 @@ public class TaTeTi implements ITaTeTiTDA {
         return valid;
     }
 
+    //o(n) 0 < n > 9
     public boolean boardCompleted() {
         int i = 0;
         boolean completed = true;
@@ -38,15 +40,18 @@ public class TaTeTi implements ITaTeTiTDA {
     }
 
     @Override
+    //O(n) n == 9
     public void Inicializar() {
         Arrays.fill(board, empty);
     }
 
     @Override
+
     public void Turno() throws Exception {
         this.Turno(GetRandomPosition());
     }
-    
+
+    //O(n^2)
     public void Turno(int selectedPosition) throws Exception {
 	        int pos = selectedPosition - 1;
 	        if(board[pos] != empty) {
@@ -64,6 +69,7 @@ public class TaTeTi implements ITaTeTiTDA {
     }
 
     @Override
+    //O(n^2)
     public void Jugar(int selectedPosition) throws Exception {
         int pos = selectedPosition - 1;
         if(board[pos] != empty)
@@ -72,6 +78,7 @@ public class TaTeTi implements ITaTeTiTDA {
         this.mostrarTablero(player);
     }
 
+    //O(1)
     public int getResult() {
         if(board[0] != 0 && board[0] == board[2] && board[1] == board[2]) {
             return board[0];
@@ -94,6 +101,8 @@ public class TaTeTi implements ITaTeTiTDA {
         }
     }
 
+
+    //O(n^3)
     public void JugarPc() {
         if(!boardCompleted()) {
             int value = Integer.MIN_VALUE, aux, pos = 0;
@@ -115,6 +124,14 @@ public class TaTeTi implements ITaTeTiTDA {
         this.mostrarTablero(pc);
     }
 
+    /*
+        Θ(n^(k+1)) si a = 1
+        a = 1
+        b = 1
+        k = 1
+
+        O(n^2)
+     */
     private int minmax(int turn, int alfa, int beta) {
         count++;
         if(boardCompleted() || getResult() != 0) {
@@ -152,11 +169,13 @@ public class TaTeTi implements ITaTeTiTDA {
         return value;
     }
 
+    //O(1)
     public String GetWinner() {
         int p = getResult();
         return ParsePlayerName(p);
     }
 
+    //O(1)
     public String ParsePlayerName(int p) {
         if(p == pc)
             return "PC";
@@ -166,6 +185,7 @@ public class TaTeTi implements ITaTeTiTDA {
             return "Ninguno";
     }
 
+    //O(n^2)
     public void mostrarTablero(int p) {
         System.out.println(String.format("Jugada de %s", ParsePlayerName(p)));
         for (int i = 0; i < 3; i++) {
