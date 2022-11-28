@@ -16,7 +16,7 @@ public class TaTeTi implements ITaTeTiTDA {
 
     public boolean prune = true;
 
-    //o(1)
+    // Compleiidad Constante
     public boolean validatePosition(int pos) {
         int position = pos - 1;
         boolean valid = true;
@@ -26,7 +26,7 @@ public class TaTeTi implements ITaTeTiTDA {
         return valid;
     }
 
-    //o(n) 0 < n > 9
+    // Compleiidad Constante
     public boolean boardCompleted() {
         int i = 0;
         boolean completed = true;
@@ -40,18 +40,16 @@ public class TaTeTi implements ITaTeTiTDA {
     }
 
     @Override
-    //O(n) n == 9
     public void Inicializar() {
         Arrays.fill(board, empty);
     }
 
     @Override
-
     public void Turno() throws Exception {
         this.Turno(GetRandomPosition());
     }
 
-    //O(n^2)
+    // Compleiidad Constante
     public void Turno(int selectedPosition) throws Exception {
 	        int pos = selectedPosition - 1;
 	        if(board[pos] != empty) {
@@ -69,7 +67,7 @@ public class TaTeTi implements ITaTeTiTDA {
     }
 
     @Override
-    //O(n^2)
+    // Compleiidad Constante
     public void Jugar(int selectedPosition) throws Exception {
         int pos = selectedPosition - 1;
         if(board[pos] != empty)
@@ -78,7 +76,7 @@ public class TaTeTi implements ITaTeTiTDA {
         this.mostrarTablero(player);
     }
 
-    //O(1)
+    // Compleiidad Constante
     public int getResult() {
         if(board[0] != 0 && board[0] == board[2] && board[1] == board[2]) {
             return board[0];
@@ -170,13 +168,13 @@ public class TaTeTi implements ITaTeTiTDA {
         return value;
     }
 
-    //O(1)
+    // Compleiidad Constante
     public String GetWinner() {
         int p = getResult();
         return ParsePlayerName(p);
     }
 
-    //O(1)
+    // Compleiidad Constante
     public String ParsePlayerName(int p) {
         if(p == pc)
             return "PC";
@@ -186,7 +184,7 @@ public class TaTeTi implements ITaTeTiTDA {
             return "Ninguno";
     }
 
-    //O(n^2)
+    // Compleiidad Constante
     public void mostrarTablero(int p) {
         System.out.println(String.format("Jugada de %s", ParsePlayerName(p)));
         for (int i = 0; i < 3; i++) {
